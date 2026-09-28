@@ -28,6 +28,8 @@ export class ParticleField {
   private reducedMotion: boolean;
   private viewW = 1;
   private viewH = 1;
+  private lastW = 0;
+  private lastH = 0;
 
   constructor(canvas: HTMLCanvasElement, palette: Palette, reducedMotion: boolean, images: ShapeImages) {
     this.reducedMotion = reducedMotion;
@@ -130,9 +132,19 @@ export class ParticleField {
     (this.material.uniforms.uAccent.value as THREE.Color).set(palette.accent);
   }
 
+  /**
+   * Sized from the canvas element, which is 100lvh tall (the largest viewport
+   * height). On phones the address bar shows and hides while scrolling and
+   * changes window.innerHeight each time; the canvas height does not, so the
+   * scene no longer jumps. Calls with an unchanged size do nothing.
+   */
   resize() {
-    const w = window.innerWidth;
-    const h = window.innerHeight;
+    const canvas = this.renderer.domElement;
+    const w = canvas.clientWidth || window.innerWidth;
+    const h = canvas.clientHeight || window.innerHeight;
+    if (w === this.lastW && h === this.lastH) return;
+    this.lastW = w;
+    this.lastH = h;
     const dpr = Math.min(window.devicePixelRatio, 1.75);
     this.renderer.setPixelRatio(dpr);
     this.renderer.setSize(w, h, false);

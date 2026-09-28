@@ -124,7 +124,7 @@ export default function Scene() {
       ref={canvasRef}
       data-scene=""
       aria-hidden="true"
-      className="pointer-events-none fixed inset-0 z-0 size-full"
+      className="pointer-events-none fixed inset-x-0 top-0 z-0 h-lvh w-full"
     />
   );
 }
