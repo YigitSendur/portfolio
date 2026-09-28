@@ -1,0 +1,105 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens, in two layers.
+ * 1. Primitive tokens: the raw palette. Nothing in the UI uses these directly.
+ * 2. Semantic tokens: what a colour is FOR (surface, ink, accent...).
+ *    Light and dark themes only swap the semantic layer.
+ * The theme block below turns the semantic layer into Tailwind utilities
+ * (bg-surface, text-ink, border-rule...), and the WebGL scene reads
+ * --particle and --accent, so the canvas follows the same theme.
+ */
+:root {
+  /* primitives */
+  --fog-100: #e6e9ec;
+  --fog-300: #c3cad2;
+  --slate-500: #555e6b;
+  --slate-900: #161b24;
+  --slate-850: #1b2230;
+  --cobalt-600: #2740c9;
+  --cobalt-300: #8d9dff;
+  --night-900: #151a21;
+  --night-700: #2f3743;
+  --mist-100: #e4e8ee;
+  --mist-200: #d6dce6;
+  --mist-400: #9aa3b0;
+
+  /* semantic, light theme */
+  --surface: var(--fog-100);
+  --surface-veil: rgb(230 233 236 / 0.86);
+  --ink: var(--slate-900);
+  --muted: var(--slate-500);
+  --rule: var(--fog-300);
+  --accent: var(--cobalt-600);
+  --particle: var(--slate-850);
+
+  color-scheme: light;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* dark theme follows the system setting: only the semantic layer changes */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --surface: var(--night-900);
+    --surface-veil: rgb(21 26 33 / 0.84);
+    --ink: var(--mist-100);
+    --muted: var(--mist-400);
+    --rule: var(--night-700);
+    --accent: var(--cobalt-300);
+    --particle: var(--mist-200);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --surface: var(--night-900);
+  --surface-veil: rgb(21 26 33 / 0.84);
+  --ink: var(--mist-100);
+  --muted: var(--mist-400);
+  --rule: var(--night-700);
+  --accent: var(--cobalt-300);
+  --particle: var(--mist-200);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-surface: var(--surface);
+  --color-surface-veil: var(--surface-veil);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-rule: var(--rule);
+  --color-accent: var(--accent);
+
+  --font-sans: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
+
+  --text-display: clamp(2.6rem, 5.4vw, 4.6rem);
+  --text-display--line-height: 0.95;
+  --text-lead: 1.2rem;
+  --text-lead--line-height: 1.5;
+}
+
+*, *::before, *::after { box-sizing: inherit; }
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 4rem);
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+body {
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+a { text-underline-offset: 0.22em; text-decoration-thickness: 1px; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+
+.no-webgl [data-scene] { display: none; }
